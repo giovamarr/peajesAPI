@@ -1,0 +1,135 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+      "description": "contacto: giovamartin@gmail.com",
+      "version": "1.0.0",
+      "title": "Prueba Tecnica - Giovanni Martin"
+
+    },
+       "servers": [
+            {
+            "url": "/api"
+            }
+        ],
+        "components": {
+            "schemas": {
+                "Cubicle": {
+                    "type": "object",
+                    "properties": {
+                        "name": {
+                        "type": "string"
+                        }
+                    }
+                },
+                "Payment": {
+                    "type": "object",
+                    "properties": {
+                        "cubicle_id": {
+                        "type": "integer"
+                        },
+                        "payment_method_id": {
+                            "type": "integer"
+                        },
+                        "price":{
+                            "type": "float"
+                        },
+                        "type_vehicle_id":{
+                            "type": "integer"
+                        }
+                        }
+                        
+                        
+                    }
+                }
+            }
+        ,
+         "paths": {
+            "/cabinas": {
+                "post": {
+                "tags": [
+                    "Registrar Cabina"
+                ],
+                "summary": "Registrar una cabina",
+                "requestBody": {
+                "required": true,
+                "content": {
+                    "application/json": {
+                    "schema": {
+                        "$ref": "#/components/schemas/Cubicle"
+                        }
+                    }
+                }
+                },
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                        "$ref": "#/components/schemas/Cubicle"
+                        }
+                    },
+                    "404": {
+                        "description": "NOT FOUND",
+                        "schema": {
+                        "$ref": "#/components/schemas/Cubicle"
+                        }
+                }
+                }
+                },
+                "get" :{
+                    "tags": [
+                        "Obtener Cabinas"
+                    ],
+                    "summary": "Obtener todas las cabinas",
+                   
+                    "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                        "$ref": "#/components/schemas/Cubicle"
+                        }
+                    },
+                    "404": {
+                        "description": "NOT FOUND",
+                        "schema": {
+                        "$ref": "#/components/schemas/Cubicle"
+                        }
+                }
+                }
+                },
+                "put" :{
+                    "tags": [
+                        "Actualizar Cabinas"
+                    ],
+                    "summary": "Actualizar el estado de una cabina",
+                    "requestBody": {
+                        "required": true,
+                        "content": {
+                            "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/Cubicle"
+                                }
+                            }
+                        }
+                        },
+                    "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                        "$ref": "#/components/schemas/Cubicle"
+                        }
+                    },
+                    "404": {
+                        "description": "NOT FOUND",
+                        "schema": {
+                        "$ref": "#/components/schemas/Cubicle"
+                        }
+                }
+                }
+                }
+            }
+           
+    }
+    
+
+
+  }
