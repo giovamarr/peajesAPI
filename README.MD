@@ -23,3 +23,5 @@
 ## Para ejecutar los tests
 
 `pytest tests.py`
+
+## Los logs de errores no previstos se guardar en el archivo logs\log\app.log
