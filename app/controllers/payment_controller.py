@@ -1,3 +1,7 @@
+""""
+La capa controller se encarga de recibir las peticiones y enviarla a los services. El service le envia la respuesta que debe responder.
+
+"""
 from flask import Blueprint, request, jsonify
 from app.services.payment_service import PaymentService
 from app.logs.logger import Logger
@@ -8,7 +12,8 @@ payment_controller = Blueprint("payment_controller", __name__)
 
 @payment_controller.route("/", methods=["GET"])
 def get_payments():
-    ''''''
+    """Lista todos los pagos realizados
+    """
     try:
         cubicles = PaymentService().get_payments()
         to_return = [cubicle.serialize() for cubicle in cubicles]
@@ -20,22 +25,23 @@ def get_payments():
 
 @payment_controller.route("/", methods=["POST"])
 def create_payment():
-    ''''''
-    # try:
-    data = request.get_json()
-    cubicle_id = data.get('cubicle_id')
-    payment_method_id = data.get('payment_method_id')
-    price = data.get('price')
-    type_vehicle = data.get('type_vehicle')
-    payment = PaymentService().create(cubicle_id = cubicle_id, payment_method_id = payment_method_id, price = price, type_vehicle = type_vehicle)
-    return jsonify({"payment": payment.serialize()}), 201
-    # except PriceNotValid:
-    #     raise PriceNotValid("Price and type vehicle not match")
-    # except CubicleNotFound:
-    #     raise CubicleNotFound("Cubicle not valid")
-    # except PaymentMethodNotFound:
-    #      raise PaymentMethodNotFound("Payment method not valid")
-    # except Exception as ex:
-    #     Logger.add_to_log("error", str(ex))
-    #     Logger.add_to_log("error", traceback.format_exc())
-    #     return jsonify({"error": "Internal Error"}), 500
+    """Registra un pago
+    """
+    try:
+        data = request.get_json()
+        cubicle_id = data.get('cubicle_id')
+        payment_method_id = data.get('payment_method_id')
+        price = data.get('price')
+        type_vehicle = data.get('type_vehicle')
+        payment = PaymentService().create(cubicle_id = cubicle_id, payment_method_id = payment_method_id, price = price, type_vehicle = type_vehicle)
+        return jsonify({"payment": payment.serialize()}), 201
+    except PriceNotValid:
+        raise PriceNotValid("Price and type vehicle do not match")
+    except CubicleNotFound:
+        raise CubicleNotFound("Cubicle is not valid")
+    except PaymentMethodNotFound:
+         raise PaymentMethodNotFound("Payment method is not valid")
+    except Exception as ex:
+        Logger.add_to_log("error", str(ex))
+        Logger.add_to_log("error", traceback.format_exc())
+        return jsonify({"error": "Internal Error"}), 500

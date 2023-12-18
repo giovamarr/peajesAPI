@@ -1,8 +1,12 @@
-'''Para poder heredar los metodos basicos y reutilizarlos'''
+"""
+La capa repository es la encargada de hacer las consultas a la base de datos
+"""
 from app.database.connection import db
 
 
 class BaseRepository():
+    """Clase abstracta para definir metodos comunes
+    """
     def __init__(self, model):
         self.model = model
     

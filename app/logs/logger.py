@@ -1,7 +1,9 @@
+"""Registra los logs de errores en el archivo log/app.log.
+"""
+
 import logging
 import os
 import traceback
-
 
 class Logger():
 

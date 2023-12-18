@@ -3,7 +3,7 @@ from app.database.connection import db
 
 
 class Cubicle(db.Model):
-    '''Cabina de peaje'''
+    """Cabina de peaje"""
     __tablename__ = 'cubicles'
     id = db.Column(db.Integer, primary_key = True, autoincrement = True)
     name = db.Column(db.String(100))
@@ -18,8 +18,14 @@ class Cubicle(db.Model):
             "enabled": self.enabled
         }
 
+    def serialize_simple(self):
+        return {
+            "id": self.id,
+            "name": self.name
+        }
+
 class PaymentMethod(db.Model):
-    '''Diferentes metodos de pago validos'''
+    """Metodos de pago"""
     __tablename__ = 'payment_methods'
     id = db.Column(db.Integer, primary_key = True)
     name = db.Column(db.String(100))
@@ -31,14 +37,14 @@ class PaymentMethod(db.Model):
         }
 
 class Price(db.Model):
-    ''''''
+    """Precios por tipo de vehiculos"""
     __tablename__ = 'prices'
     id = db.Column(db.Integer, primary_key = True)
     type_vehicle = db.Column(db.Integer, nullable=False)
     price = db.Column(db.Float(precision=2), nullable=False)
 
 class Payment(db.Model):
-    '''Pagos realizados'''
+    """Pagos realizados"""
     __tablename__ = 'payments'
     id = db.Column(db.Integer, primary_key = True)
     cubicle_id = db.Column(db.Integer, db.ForeignKey('cubicles.id'), nullable=False)
@@ -47,17 +53,15 @@ class Payment(db.Model):
     date = db.Column(db.DateTime, default=datetime.now, nullable=False)
 
     # Relationships
-    # payment_method = db.relationship("MetodoPago")
-    # cubicle = db.relationship("Cubicle")
+    payment_method = db.relationship("PaymentMethod")
+    cubicle = db.relationship("Cubicle")
 
 
     def serialize(self):
         return {
             "id": self.id,
-            "cubicle_id": self.cubicle_id,
-            # "cubicle": self.cubicle, #capaz convenga un serialize aca tmb
             "price": self.price,
-            "payment_method_id": self.payment_method_id,
-            # "payment_method": self.payment_method,  #capaz convenga un serialize aca tmb
-            "date": self.date
+            "date": self.date,
+            "cubicle": self.cubicle.serialize_simple(),
+            "payment_method": self.payment_method.serialize()
         }

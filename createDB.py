@@ -1,3 +1,7 @@
+"""
+Archivo para crear la base de datos y cargar datos a las tablas de metodos de pago y precios para poder probar la API
+"""
+
 import sqlite3
 from contextlib import contextmanager
 from config import Config

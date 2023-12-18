@@ -1,14 +1,20 @@
+""""
+La capa controller se encarga de recibir las peticiones y enviarla a los services. El service le envia la respuesta que debe responder.
+
+"""
+
 from flask import Blueprint, request, jsonify
 from app.services.cubicle_service import CubicleService
 from app.logs.logger import Logger
 import traceback
-from app.exceptions.exceptions import NameNotValid, CubicleNotFound
+from app.exceptions.exceptions import NameNotValid, CubicleNotFound, EnabledNotValid
 
 cubicle_controller = Blueprint("cubicle_controller", __name__)
 
 @cubicle_controller.route("/", methods=["GET"])
 def get_cubicles():
-    '''Listar todas las cabinas existentes'''
+    """Lista todas las cabinas existentes
+    """
     try:
         cubicles = CubicleService().get_cubicles()
         cubicles_serialized = [cubicle.serialize() for cubicle in cubicles]
@@ -20,17 +26,17 @@ def get_cubicles():
 
 @cubicle_controller.route("/", methods=["POST"])
 def create_cubicle():
-    '''Registrar nueva cabina'''
+    """Registrar nueva cabina
+    """
     try:
         data = request.get_json()
         name = data.get('name')
         if not name:
-            return jsonify({'error': 'Name is required'}), 400
-        
+            raise NameNotValid()        
         cubicle = CubicleService().create(name = name)
         return jsonify({"cubicle": cubicle.serialize()}), 201
     except NameNotValid:
-        raise CubicleNotFound("Name not valid")
+        raise NameNotValid("Name is not valid")
     except Exception as ex:
         Logger.add_to_log("error", str(ex))
         Logger.add_to_log("error", traceback.format_exc())
@@ -38,17 +44,18 @@ def create_cubicle():
 
 @cubicle_controller.route("/", methods=["PUT"])
 def toggle_cubicle():
-    '''Actualizar entre habilitada/deshabilitada una cabina'''
+    """Actualiza una cabina entre habilitada y deshabilitada
+    """
     try:
         data = request.get_json()
         _id = data.get('id')
         enabled = data.get('enabled')
-        if type(enabled) is not bool:
-            return jsonify({'error': 'Enabled must be a boolean'}), 400
         cubicle = CubicleService().change_status(_id = _id, enabled = enabled)
         return jsonify({"cubicle": cubicle.serialize()}), 201
     except CubicleNotFound:
-        raise CubicleNotFound("Cubicle not valid")
+        raise CubicleNotFound("Cubicle is not valid")
+    except EnabledNotValid:
+        raise EnabledNotValid("Enabled is not valid")
     except Exception as ex:
         Logger.add_to_log("error", str(ex))
         Logger.add_to_log("error", traceback.format_exc())
